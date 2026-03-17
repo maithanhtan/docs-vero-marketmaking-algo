@@ -1,7 +1,6 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Algo Market Making & Hedge",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -11,112 +10,43 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Algo Market Making & Hedge",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Market Making",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "mm-hedge/index",
+              "mm-hedge/tao-market-making",
+              "mm-hedge/sua-cau-hinh",
+              "mm-hedge/tab-dieu-khien",
+              "mm-hedge/tab-bao-cao"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Hedge",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "mm-hedge/tab-tong-hop-hedge",
+              "mm-hedge/tab-hedge-theo-ma",
+              "mm-hedge/hedging-tong-quan"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Các lỗi thường gặp và cách xử lý",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "mm-hedge/luu-y-va-loi",
+              "mm-hedge/thuat-ngu"
             ]
           }
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    "global": {}
   },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
-  }
+  "navbar": {},
+  "footer": {}
 }

@@ -1,0 +1,81 @@
+---
+title: 'Tạo Market Making'
+description: 'Các trường trong hộp thoại Tạo Market Making'
+---
+
+Mở bằng nút **Tạo mới**. Ba tab: **Cơ bản**, **Cài đặt Chế độ**, **An toàn** (An toàn chỉ hiện khi bật "advanced settings").
+
+## Tab Cơ bản
+
+### Mã CK
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Mã Tạo lập thị trường** | Mã CK (CW hoặc khác) mà thuật toán đặt lệnh two-way. Bắt buộc. Chọn CW → có thể tự điền Mã cơ sở, Black-Scholes (Strike, đáo hạn, Call/Put, tỷ lệ chuyển đổi), tham số tối ưu. |
+| **Mã cơ sở (Underlying Symbol)** | Mã tài sản cơ sở (vd: CP) cho giá mục tiêu. Bắt buộc với chế độ Following. |
+
+### Tài khoản
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Tài khoản Tạo lập thị trường** | Tài khoản đặt lệnh MM (bid/ask). Bắt buộc. |
+| **Tài khoản Phòng hộ** | Tài khoản hedge. Tùy chọn; không chọn thì có thể dùng cùng tài khoản MM. |
+
+## Tab Cài đặt Chế độ
+
+### Mô hình Định giá
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Mô hình Định giá** | **Delta One:** giá = slope × giá underlying + intercept. **Black-Scholes:** định giá quyền chọn (CW). |
+| **Hệ số slope / Intercept** | Delta One: nhân với giá underlying và độ lệch cố định. |
+| **K, Ngày đáo hạn, Lãi suất phi rủi ro %, Biến động %** | Tham số Black-Scholes. Có "Use optimal volatility". |
+| **Loại quyền (Call/Put)** | Call = quyền mua, Put = quyền bán. |
+| **Tỷ lệ Chuyển đổi** | Số đơn vị CW / 1 đơn vị underlying (vd: 0.1 = 10 CW / 1 CP). |
+
+### Tham số cốt lõi
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Chế độ Giá** | **Giá Cuối** / **Dựa trên Sổ lệnh**. |
+| **Khoảng Bid/Ask (Price Bid Ask Spacing)** | Khoảng cách (bps/bước) giữa giá mục tiêu và bid/ask. |
+| **Khoảng ngẫu nhiên SL (ms)** | Chu kỳ làm mới/random size (ms). |
+
+### Khối lượng
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **KL Mua/Bán Tối đa (Bid/Ask Max Qty)** | Base cho phân bổ layer. |
+| **Bid/Ask Rnd Qty (%)** | % ngẫu nhiên thêm vào size. |
+
+### Phân lớp (Layering)
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Bật Phân lớp** | Nhiều mức giá mỗi bên bid/ask. |
+| **Chế độ** | **Symmetric** (cùng khoảng, phân bổ) / **Asymmetric** (bid/ask riêng). |
+| **Số Lớp, Price step** | Symmetric: bước giá, KL từng lớp (L1, L2…). |
+| **Bid/Ask Price Step, Bid/Ask Qty %** | Asymmetric: bước và % KL từng level (tổng mỗi bên = 100%). |
+
+### Phòng hộ (Hedging)
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Bật Hedging** | Vượt ngưỡng → đặt lệnh hedge. |
+| **Ngưỡng Phòng hộ** | Giá trị (inventory value) để kích hoạt (vd: 1.000.000). |
+| **Tỷ lệ Phòng hộ (%)** | % vị thế cần hedge (vd: 50%). |
+| **Công cụ Phòng hộ** | Mã dùng để hedge (thường mã cơ sở CW). |
+| **Chế độ Mua/Bán Phòng hộ** | **BEST** / **LAST** / **MTL**. |
+
+## Tab An toàn
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| **Lỗ Tối đa** | Dừng khi tổng lỗ vượt. 0 = tắt. |
+| **Chốt Lời** | Dừng khi lợi nhuận đạt. 0 = tắt. |
+| **Anti-Arb** | Giảm size/cooldown khi nhiều lệnh khớp nhanh bất thường. |
+| **Cửa sổ Khớp lệnh (ms), Ngưỡng Khớp lệnh** | Đếm lệnh trong cửa sổ → kích hoạt. |
+| **Giảm Số lượng %, Thời gian Hồi (ms)** | Khi Anti-Arb: giảm KL %, thời gian nguội. |
+| **Khoảng Cập nhật Tối thiểu (ms)** | Tối thiểu giữa hai lần cập nhật giá. 0 = không giới hạn. |
+
+Bấm **Bắt đầu** để tạo và chạy; **Hủy** để đóng.

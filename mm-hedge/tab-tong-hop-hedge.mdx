@@ -1,0 +1,36 @@
+---
+title: 'Tab Tổng hợp Hedge'
+description: 'Tổng quan hedge theo mã cơ sở'
+---
+
+Xem **tổng quan theo từng mã cơ sở:** delta ròng, notional CW, KL hedge yêu cầu/đã hedge, độ phủ, trạng thái hedger (VALID / WARN / INVALID).
+
+## Thao tác
+
+- **Tự động làm mới:** Bật/tắt; khi bật ~15s/lần.
+- **Cập nhật lần cuối**, nút **Làm mới**.
+- **Lọc trạng thái:** Dropdown cột trạng thái — Tất cả / VALID / WARN / INVALID.
+- **Sắp xếp:** Bấm tiêu đề cột (Mã cơ sở, Delta ròng, Notional lệch, Độ phủ).
+
+## Khối tổng (6 ô)
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| Tổng delta ròng | Toàn bộ CW (theo lọc). |
+| Tổng notional CW | Giá trị danh nghĩa vị thế CW. |
+| Tổng KL hedge yêu cầu / vị thế hedge | Cần / đã hedge. |
+| KL thiếu hedge | Còn thiếu (phần dương). |
+| Tổng notional thiếu hedge | Giá trị còn phải bù. |
+
+## Bảng theo mã cơ sở
+
+| Cột | Ý nghĩa |
+|-----|---------|
+| Mã cơ sở | Mã tài sản cơ sở. |
+| Trạng thái hedger | VALID / WARN / INVALID. |
+| Delta ròng, KL hedge yêu cầu, KL vị thế hedge | |
+| KL residual | Dư/thiếu sau so sánh. |
+| Notional lệch | Chênh lệch giá trị. |
+| Độ phủ | % đã hedge / yêu cầu (100% = đủ). |
+| KL hedge TT | KL hedge đang trên thị trường. |
+| Số lượng CW, Mã Hedge | |

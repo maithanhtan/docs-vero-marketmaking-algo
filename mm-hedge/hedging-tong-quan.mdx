@@ -1,0 +1,38 @@
+---
+title: 'Hedging — Tổng quan'
+description: 'Cấu hình hedge, hai màn hình, trạng thái, điều khiển, báo cáo Excel'
+---
+
+## Cấu hình khi tạo/sửa MM
+
+Tab **Cài đặt Chế độ** → block **Phòng hộ:** Bật hedge → theo dõi inventory; khi **giá trị vị thế** vượt **Ngưỡng** → đặt lệnh mua/bán **Công cụ Phòng hộ** trên **Tài khoản Phòng hộ**. **Tỷ lệ %:** phần trăm cần hedge. **Chế độ Mua/Bán:** BEST / LAST / MTL.
+
+## Hai màn hình
+
+| Màn hình | Mục đích | Khi dùng |
+|----------|----------|----------|
+| **Tổng hợp Hedge** | Tất cả mã cơ sở: delta, notional, KL, độ phủ %, trạng thái. Lọc, sắp xếp. | Đánh giá toàn cục; ưu tiên xử lý. |
+| **Hedge theo mã cơ sở** | Một mã: bảng CW, lệnh hedge, log. Xuất Excel. Bắt đầu/Tiếp tục/Giữ Hedge. | Đi sâu một mã; tải báo cáo; tạm dừng/tiếp tục hedger. |
+
+## Trạng thái Hedger
+
+- **VALID:** Bình thường.
+- **WARN:** Cảnh báo (độ lệch trong ngưỡng, cần để ý).
+- **INVALID:** Lỗi / không hợp lệ; cần kiểm tra cấu hình, tài khoản, vị thế.
+
+Lọc theo trạng thái ở cả hai tab.
+
+## Điều khiển (tab Hedge theo mã cơ sở)
+
+- **Bắt đầu:** Khởi động hedger cho algo đang chọn (algo đang dừng).
+- **Tiếp tục Hedge:** Chạy lại sau **Giữ Hedge**.
+- **Giữ Hedge:** Tạm dừng — không đặt lệnh hedge mới.
+
+**Cài đặt Hedge** → đổi ngưỡng, tỷ lệ, mã hedge, tài khoản, chế độ mua/bán.
+
+## Báo cáo Excel
+
+- **Báo Cáo Định Kỳ Tháng TCPH:** Định kỳ tháng TCPH (số CW, OI, tự doanh, KLGD, giá trị hedging, vi phạm vị thế/TLTTT, spread…).
+- **Báo Cáo Phòng Ngừa Rủi Ro Hàng Ngày:** Theo ngày (CW, OI, delta, vị thế lý thuyết/thực tế, chênh lệch %, trạng thái, số ngày vi phạm…).
+
+Phạm vi: **Mã đang chọn** / **Tất cả mã cơ sở** → **Tải xuống**.

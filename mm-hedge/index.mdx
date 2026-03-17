@@ -1,0 +1,31 @@
+---
+title: 'Algo Market Making & Hedge'
+description: 'Tổng quan màn hình và 4 tab chính'
+---
+
+Tài liệu dành cho **người dùng** — mô tả tính năng, thao tác và ý nghĩa từng trường.
+
+## Bốn tab chính
+
+| Tab | Mục đích |
+|-----|----------|
+| **Điều khiển** | Chọn thuật toán MM, xem chi tiết, bật/tạm dừng/dừng, xem lệnh/nhật ký/giao dịch |
+| **Báo cáo** | P&L, volume, tỷ lệ filled theo từng thuật toán MM |
+| **Tổng hợp Hedge** | Tổng quan hedge theo **mã cơ sở**: delta, notional, độ phủ, trạng thái |
+| **Hedge theo mã cơ sở** | Chi tiết hedge **một mã cơ sở**: bảng CW, lệnh hedge, nhật ký; tải báo cáo Excel |
+
+## Thanh bên phải tab
+
+- **Đang chạy / Tổng** — số thuật toán đang chạy trên tổng số.
+- **Dừng Khẩn Cấp** — dừng tất cả MM. Bấm → xác nhận → **Xác nhận** / **Hủy**.
+- **Nhập** — tạo nhiều thuật toán MM cùng lúc (xem mục Nhập bên dưới).
+- **Tạo mới** — tạo từng thuật toán MM qua hộp thoại.
+
+## Nhập (Import)
+
+Bấm **Nhập** → hộp thoại **Import Market Making Algos**:
+
+- **Thủ công:** Thêm từng dòng (mã CK, mã cơ sở, tài khoản MM, tài khoản Hedge…). Thêm nhiều dòng → **Start All** để tạo và chạy. **Xóa tất cả** để làm trống.
+- **Nhập CSV:** Dán hoặc upload CSV theo mẫu → phân tích/nhập → dữ liệu sang tab Thủ công → kiểm tra → **Start All**.
+
+Sau Start All: danh sách ở tab Điều khiển cập nhật. Lỗi (thiếu tài khoản, mã cơ sở…) → báo thành công X / thất bại Y.
