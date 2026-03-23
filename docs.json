@@ -6,29 +6,30 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/ammh-favicon.png",
   "navigation": {
     "tabs": [
       {
         "tab": "Algo Market Making & Hedge",
         "groups": [
           {
+            "group": "Home",
+            "pages": [
+              "index"
+            ]
+          },
+          {
             "group": "Market Making",
             "pages": [
-              "index",
-              "mm-hedge/index",
-              "mm-hedge/tao-market-making",
-              "mm-hedge/sua-cau-hinh",
-              "mm-hedge/tab-dieu-khien",
-              "mm-hedge/tab-bao-cao"
+              "mm-hedge/market-making-control",
+              "mm-hedge/market-making-report"
             ]
           },
           {
             "group": "Hedge",
             "pages": [
-              "mm-hedge/tab-tong-hop-hedge",
-              "mm-hedge/tab-hedge-theo-ma",
-              "mm-hedge/hedging-tong-quan"
+              "mm-hedge/hedge-summary",
+              "mm-hedge/hedge-control"
             ]
           },
           {
@@ -44,8 +45,8 @@
     "global": {}
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/ammh-logo-light.svg",
+    "dark": "/logo/ammh-logo-dark.svg"
   },
   "navbar": {},
   "footer": {}

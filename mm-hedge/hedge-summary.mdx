@@ -1,0 +1,53 @@
+---
+title: 'Hedge Summary'
+description: 'Tổng quan hedge theo underlying - Hedge Summary và Hedge Summary by Underlying'
+---
+
+<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
+  <div style={{ width: '63.64%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+</div>
+
+<img src="/images/view-hedge-summary.jpg" alt="Hedge Summary Overview" />
+
+Màn hình **Hedge Summary** dùng để xem **hedge tổng quan và hedge theo underlying**. Gồm 2 màn hình như sau:
+
+---
+
+## 1. Hedge Summary
+
+<img src="/images/view-hedge-summary-header.jpg" alt="Hedge Summary - Live Hedge Monitoring, Auto Refresh, KPI cards" />
+
+### Diễn giải các field
+
+| Field | Ý nghĩa |
+|-------|---------|
+| **TOTAL HEDGE NOTIONAL VALUE** | Tổng notional vị thế hedge hiện có (tiền). |
+| **TOTAL WARRANT NOTIONAL** | Tổng notional vị thế warrant liên quan. |
+| **TOTAL REQUIRED HEDGE QTY** | Tổng khối lượng **cần** hedge. |
+| **TOTAL HEDGE POSITION QTY** | Tổng khối lượng **đã** hedge (position). |
+| **HEDGE GAP QTY UNDERLYING** | Khối lượng hedge **thiếu**. |
+| **TOTAL MISSING HEDGE NOTIONAL** | Giá trị tiền của phần hedge còn thiếu. |
+
+**Tips:** Dùng field HEDGE GAP QTY UNDERLYING để xác định nhanh tình trạng hedge, Field TOTAL MISSING HEDGE NOTIONAL để xem giá trị cần hedge lý thuyết.
+
+---
+
+## 2. Hedge Summary by Underlying
+
+<img src="/images/view-hedge-summary-by-underlying.jpg" alt="Underlying Coverage - Hedge Summary by Underlying" />
+### Diễn giải các field
+
+| Field | Ý nghĩa |
+|--------|---------|
+| **SYMBOL** | Mã underlying (vd MWG). |
+| **Status** | **VALID** - khi hedge đầy đủ. **WARN** / **INVALID** — khi chưa đủ hedge hoặc vượt ngưỡng. |
+| **REQ HEDGE** | Khối lượng cần hedge. |
+| **HEDGE POS** | Khối lượng đã hedge. |
+| **RESIDUAL** | Chênh Khối lượng — thường **REQ HEDGE − HEDGE POS**. |
+| **GAP NOTIONAL** | Giá trị Hedge đang thiếu.|
+| **COVERED** | Tỷ lệ Hedge. |
+| **REQ NOTIONAL** | Giá trị Hedge Notional yêu cầu. |
+| **HEDGE NOTIONAL** | Giá trị Hedge Notional đã hedge. |
+| **WARRANT NOTIONAL** | Giá trị Notional Warrant liên quan underlying. |
+
+**Tips:** Dùng view  Hedge Summary by Underlying để xem chi tiết Hedge theo từng mã underlying.

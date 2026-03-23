@@ -9,6 +9,13 @@
 - Chạy `mint dev` để preview
 - Chạy `mint broken-links` để check link
 
+## Generating images (logo, section art)
+
+- Use **Stitch MCP** (server: `user-stitch`) to generate logo and section images.
+- Call `generate_screen_from_text` with **`modelId`: `"GEMINI_3_PRO"`** (Pro model) for best quality. Required: `projectId`, `prompt`. Optional: `deviceType`.
+- Download image from `screenshot.downloadUrl` (response or `get_screen`) and save to local (`logo/` or `images/`). Use only local paths in docs (e.g. `/logo/ammh-logo.png`), never embed HTTPS URL.
+- Full flow: see **STITCH_MCP.md** in repo root.
+
 ## Terminology
 
 {/* Add product-specific terms and preferred usage */}

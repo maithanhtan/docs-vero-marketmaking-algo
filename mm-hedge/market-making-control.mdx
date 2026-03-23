@@ -1,0 +1,92 @@
+---
+title: 'Market Making Control'
+description: 'Quản lý và giám sát thuật toán Market Making'
+---
+
+<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
+  <div style={{ width: '45.45%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+</div>
+
+<img src="/images/view-control.png" alt="Market Making Control — Algo Market Making" />
+
+Xem danh sách thuật toán MM; chọn một để xem chi tiết, cấu hình, lệnh, nhật ký, giao dịch.
+- **Bắt đầu** / **Tạm dừng** / **Dừng** / **Sửa** / **Xóa**.
+
+## Emergency Stop (Dừng khẩn cấp)
+
+Nút **Emergency Stop** (màu đỏ) ở góc phải: dừng **toàn bộ** thuật toán MM đang chạy ngay lập tức. Khi bấm sẽ hiện hộp thoại xác nhận.
+
+<img src="/images/view-emergency-stop-dialog.png" alt="Hộp thoại xác nhận Emergency Stop" />
+
+- **Confirm Emergency Stop** → dừng hết algo.
+- **Cancel** / **Close** → hủy, không thực hiện.
+
+## Danh sách thuật toán (cột trái)
+
+- Thu gọn/mở: nút mũi tên.
+- Chọn: bấm dòng (mã CK, #xxxx, trạng thái). **Trạng thái:** Running (xanh), Paused (vàng), Stopped (xám).
+- Chưa có algo: dùng **Tạo mới** hoặc **Nhập**.
+
+## Nhập (Import)
+
+Nút **Import** mở hộp thoại **Import Algo Basket** — tạo nhiều thuật toán MM cùng lúc bằng **Nhập tay** (Manual Input) hoặc **Nhập CSV** (CSV Import).
+
+<img src="/images/view-import-basket-manual.png" alt="Import Algo Basket — tab Manual Input" />
+
+- **Manual Input:** Thêm dòng (Add Row), điền Account ID, Market Making Symbol, Mode, Spread, Order Size, v.v. → **Start All** để chạy tất cả.
+- **CSV Import:** Kéo thả file CSV hoặc **Select File**; **Download CSV Template** để lấy mẫu. Định dạng bắt buộc: `accountID`, `product`, `mmMode` (sideway / up / down / following).
+
+<img src="/images/view-import-basket-csv.png" alt="Import Algo Basket — tab CSV Import" />
+
+## Khung chi tiết (phải) — các tab con
+
+Sau khi chọn một algo, khung bên phải có các tab: **Overview**, **Configuration**, **Performance**, **Orders**, **Trades**, **Logs**.
+
+### Overview (Tổng quan)
+
+<img src="/images/view-control-overview.png" alt="Tab Overview — MM Status, Position, Liquidity Stats" />
+
+- **MM Status:** BEST BID/ASK, THEO PRICE, BID/ASK Qty.
+- **Position Details:** AVG BUY PRICE, UNREALIZED/REALIZED P&L, SYMBOL, HEDGE VALUE.
+- **Liquidity Stats:** % LIQUIDITY JOIN, MARKET/ALGO FILLED VOL, FILLED ORDER COUNT.
+
+### Configuration (Cấu hình — chỉ xem)
+
+<img src="/images/view-control-configuration.png" alt="Tab Configuration — Core, Order, Layering, Hedge Settings" />
+
+Xem tham số đang chạy: Core Settings, Multi-Account, Inventory, Order Settings, Layering, Pricing Model, **Hedge Settings**, Self Fill, Probe Orders. Muốn đổi → dùng **Sửa** (icon bánh răng).
+
+### Performance
+
+<img src="/images/view-control-performance.png" alt="Tab Performance — Summary Report, Open Orders, Filled Orders" />
+
+- **Summary Report:** FILLED BUY/SELL QTY, NET QTY, P&L, % LIQUIDITY JOIN, MARKET VOL, TOTAL BID/ASK QTY & VALUE.
+- **Open Orders:** bảng giá / KL bid (xanh) và ask (đỏ).
+- **Filled Orders:** lệnh đã khớp (Time, Side, Price, Qty, Value).
+
+### Orders
+
+<img src="/images/view-control-orders.png" alt="Tab Orders — danh sách lệnh" />
+
+Bảng lệnh: Order ID, Status, Order Type, Side, Symbol, C.Qty. Phân trang. Khi algo chưa gửi lệnh: "No orders to display".
+
+### Trades
+
+<img src="/images/view-control-trades.png" alt="Tab Trades — giao dịch đã khớp" />
+
+Giao dịch đã khớp theo algo, đối chiếu P&L.
+
+### Logs
+
+<img src="/images/view-control-logs.png" alt="Tab Logs — nhật ký hệ thống" />
+
+Nhật ký: **Type** (Info/WARN/ERROR), **User**, **Content**, **Time**. Nút **Load more** để xem thêm.
+
+### Ý nghĩa
+
+| Block | Ý nghĩa |
+|-------|---------|
+| **Mode** | Sideway / Bullish / Bearish / Following (theo giá underlying). |
+| **Orders** | Order ID, Side, Qty, Price, Status, Time. |
+| **Logs** | INFO / WARN / ERROR. |
+| **Trades** | Giao dịch đã khớp, đối chiếu P&L. |
