@@ -1,0 +1,139 @@
+---
+title: 'Tips'
+description: 'Playbook thực chiến để tối ưu Market Making và Hedge'
+---
+
+<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
+  <div style={{ width: '72.73%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+</div>
+
+Playbook vận hành thực chiến giúp tối ưu hiệu suất Market Making và Hedge trong thị trường biến động.
+
+<Info>
+Nguyên tắc áp dụng: **thay đổi nhỏ** → **đo lường ngay** → **chuẩn hóa theo dữ liệu**.
+</Info>
+
+## Playbook Market Making
+
+<AccordionGroup>
+  <Accordion title="Tăng tính hấp dẫn thanh khoản" icon="chart-line">
+    Sử dụng **Randomize Qty** để thanh khoản hiển thị tự nhiên hơn:
+
+    - Thiết lập **Bid/Ask Rnd Qty (%)** trong vùng 10-20%
+    - Tránh pattern lặp dễ bị nhận diện
+    - Cải thiện khả năng khớp trong điều kiện thanh khoản mỏng
+
+    **Kỳ vọng**: Fill rate thường cải thiện 15-25% so với size cố định.
+  </Accordion>
+
+  <Accordion title="Tối ưu Layering Strategy" icon="layer-group">
+    **Symmetric** (thị trường ổn định)
+    - L1: 40%, L2: 30%, L3: 30%
+    - Price step nhỏ (1-2 bps)
+
+    **Asymmetric** (thị trường có xu hướng)
+    - Điều chỉnh bid/ask theo hướng thị trường
+    - Tách riêng bước giá và tỷ trọng để kiểm soát rủi ro tốt hơn
+  </Accordion>
+
+  <Accordion title="Quản lý rủi ro với Anti-Arb" icon="shield-halved">
+    | Tham số | Khuyến nghị |
+    |---------|-------------|
+    | **Fill Window** | 5,000-10,000ms |
+    | **Fill Threshold** | 3-5 lệnh |
+    | **Qty Reduction** | 50-70% |
+    | **Cooldown** | 30,000-60,000ms |
+
+    Dấu hiệu kích hoạt: nhiều lệnh khớp dồn dập trong thời gian ngắn với mẫu hành vi bất thường.
+  </Accordion>
+
+  <Accordion title="Price Update Throttling" icon="gauge">
+    Giảm nhiễu vận hành bằng cách giới hạn tần suất update:
+    - **Min Update Interval**: 1,000-3,000ms
+    - Tiết kiệm chi phí giao dịch và tải hệ thống
+
+    **Trade-off**: interval cao hơn giúp ổn định nhưng phản ứng chậm hơn.
+  </Accordion>
+</AccordionGroup>
+
+## Hedging
+
+<AccordionGroup>
+  <Accordion title="Tối ưu Delta Hedge" icon="calculator">
+    Dùng **Custom Delta** khi delta lý thuyết chưa phản ánh tốt thị trường thực tế.
+
+    | Nhóm CW | Delta điển hình | Hedge Ratio gợi ý |
+    |---------|------------------|-------------------|
+    | Call ITM | 0.7-0.9 | 70-90% |
+    | Call ATM | 0.4-0.6 | 50-70% |
+    | Call OTM | 0.1-0.3 | 30-50% |
+    | Put ITM | -0.7 đến -0.9 | 70-90% |
+    | Put ATM | -0.4 đến -0.6 | 50-70% |
+    | Put OTM | -0.1 đến -0.3 | 30-50% |
+  </Accordion>
+
+  <Accordion title="Thiết lập Hedge Threshold" icon="sliders">
+    | Quy mô vốn | Threshold tham khảo | Hedge Ratio |
+    |------------|---------------------|-------------|
+    | < 5 tỷ | 200-500 triệu | 60-80% |
+    | 5-20 tỷ | 500 triệu - 1 tỷ | 50-70% |
+    | > 20 tỷ | 1-2 tỷ | 50-60% |
+
+    Quy tắc nhanh: threshold ~5-10% vốn quản lý.
+  </Accordion>
+
+  <Accordion title="Chọn công cụ Hedge" icon="wrench">
+    **Underlying**
+    - Ưu điểm: thanh khoản tốt, spread thấp
+    - Nhược điểm: yêu cầu vốn lớn
+
+    **Futures (nếu có)**
+    - Ưu điểm: đòn bẩy, tiết kiệm vốn
+    - Nhược điểm: margin, rollover, basis risk
+  </Accordion>
+
+  <Accordion title="Timing Hedge" icon="clock">
+    | Mode | Khi dùng | Trade-off |
+    |------|----------|-----------|
+    | **BEST** | Cần hedge gấp | Nhanh, có thể tăng slippage |
+    | **LAST** | Thị trường ổn định | Giá ổn định, phản ứng chậm hơn |
+    | **MTL** | Cân bằng tốc độ/chất lượng | Linh hoạt hơn, cần theo dõi kỹ |
+  </Accordion>
+</AccordionGroup>
+
+## Giám sát và điều chỉnh
+
+<AccordionGroup>
+  <Accordion title="Theo dõi chỉ số trọng yếu" icon="chart-bar">
+    <Warning>
+    Theo dõi **Unrealized P&L** liên tục. Nếu lỗ vượt ngưỡng nội bộ, cần giảm size hoặc giãn spread ngay.
+    </Warning>
+
+    | Chỉ số | Mục tiêu | Hành động khi lệch |
+    |--------|----------|--------------------|
+    | **Liquidity Join %** | 5-15% | Tăng size hoặc giảm spread |
+    | **Fill Rate** | > 30% | Rà soát spread/quote logic |
+    | **Avg Slippage** | < 0.1% | Điều chỉnh hedge mode/timing |
+  </Accordion>
+
+  <Accordion title="Kịch bản bất thường" icon="triangle-exclamation">
+    **Biến động mạnh**
+    1. Tăng spread 1.5-2x
+    2. Giảm order size về 50-70%
+    3. Tăng hedge ratio lên 80-100%
+
+    **Thanh khoản giảm**
+    - Giảm số layer
+    - Tăng bước giá
+    - Giảm tần suất refresh
+
+    **Lệch vị thế lớn**
+    - Hedge ngay lập tức
+    - Rà soát mode và tham số
+    - Kiểm tra Anti-Arb hoạt động đúng
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+Các giá trị gợi ý là baseline. Cần hiệu chỉnh theo đặc thù từng mã CW, điều kiện thanh khoản và khẩu vị rủi ro của bàn giao dịch.
+</Note>

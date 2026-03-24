@@ -1,92 +1,172 @@
 ---
 title: 'Market Making Control'
-description: 'Quản lý và giám sát thuật toán Market Making'
+description: 'Quản lý vòng đời thuật toán Market Making: khởi tạo, giám sát, tinh chỉnh và kiểm soát rủi ro'
 ---
 
 <div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
   <div style={{ width: '45.45%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
 </div>
 
-<img src="/images/view-control.png" alt="Market Making Control — Algo Market Making" />
+<img src="/images/view-market-making-control-overview.png" alt="Market Making Control Overview" />
 
-Xem danh sách thuật toán MM; chọn một để xem chi tiết, cấu hình, lệnh, nhật ký, giao dịch.
-- **Bắt đầu** / **Tạm dừng** / **Dừng** / **Sửa** / **Xóa**.
+Màn hình điều hành trung tâm cho Market Making: tạo thuật toán, nhập theo lô, giám sát hiệu suất theo thời gian thực và xử lý tình huống khẩn cấp.
 
-## Emergency Stop (Dừng khẩn cấp)
+<Info>
+Luồng khuyến nghị: **Khởi tạo** → **Giám sát** → **Tinh chỉnh** → **Kiểm soát rủi ro**.
+</Info>
 
-Nút **Emergency Stop** (màu đỏ) ở góc phải: dừng **toàn bộ** thuật toán MM đang chạy ngay lập tức. Khi bấm sẽ hiện hộp thoại xác nhận.
+<CardGroup cols={3}>
+  <Card title="Create Market Making" icon="circle-plus">
+    Tạo thuật toán theo từng mã với cấu hình đầy đủ Basic, Mode Setting và Safety.
+  </Card>
+  <Card title="Import Basket" icon="file-arrow-up">
+    Nhập hàng loạt thuật toán bằng Manual Input hoặc CSV theo template chuẩn.
+  </Card>
+  <Card title="Emergency Stop" icon="triangle-exclamation">
+    Dừng toàn bộ thuật toán MM đang chạy khi phát sinh rủi ro hệ thống hoặc thị trường.
+  </Card>
+</CardGroup>
 
-<img src="/images/view-emergency-stop-dialog.png" alt="Hộp thoại xác nhận Emergency Stop" />
+## Khởi tạo và điều khiển
 
-- **Confirm Emergency Stop** → dừng hết algo.
-- **Cancel** / **Close** → hủy, không thực hiện.
+### 1) Tạo thuật toán Market Making
 
-## Danh sách thuật toán (cột trái)
+<img src="/images/view-create-mm-basic.png" alt="Create Market Making - Basic" />
 
-- Thu gọn/mở: nút mũi tên.
-- Chọn: bấm dòng (mã CK, #xxxx, trạng thái). **Trạng thái:** Running (xanh), Paused (vàng), Stopped (xám).
-- Chưa có algo: dùng **Tạo mới** hoặc **Nhập**.
+Bấm **Create Market Making** để mở quy trình cấu hình 3 bước.
 
-## Nhập (Import)
+#### Bước 1 — Basic
 
-Nút **Import** mở hộp thoại **Import Algo Basket** — tạo nhiều thuật toán MM cùng lúc bằng **Nhập tay** (Manual Input) hoặc **Nhập CSV** (CSV Import).
+| Trường | Mục đích |
+|--------|----------|
+| **Market Making Symbol** | Mã CW/chứng khoán cần tạo lập |
+| **Underlying Symbol** | Mã cơ sở để tính giá mục tiêu |
+| **MM Account** | Tài khoản đặt lệnh bid/ask |
+| **Hedge Account** | Tài khoản hedge (nếu tách riêng) |
 
-<img src="/images/view-import-basket-manual.png" alt="Import Algo Basket — tab Manual Input" />
+#### Bước 2 — Mode Setting
 
-- **Manual Input:** Thêm dòng (Add Row), điền Account ID, Market Making Symbol, Mode, Spread, Order Size, v.v. → **Start All** để chạy tất cả.
-- **CSV Import:** Kéo thả file CSV hoặc **Select File**; **Download CSV Template** để lấy mẫu. Định dạng bắt buộc: `accountID`, `product`, `mmMode` (sideway / up / down / following).
+<img src="/images/view-create-mm-mode-black-scholes.png" alt="Mode Setting - Black Scholes" />
+<img src="/images/view-create-mm-mode-delta-one.png" alt="Mode Setting - Delta One" />
+<img src="/images/view-create-mm-mode-core-params.png" alt="Mode Setting - Core Parameters" />
+<img src="/images/view-create-mm-mode-layering-symmetric.png" alt="Mode Setting - Layering Symmetric" />
+<img src="/images/view-create-mm-mode-layering-asymmetric.png" alt="Mode Setting - Layering Asymmetric" />
+<img src="/images/view-create-mm-mode-hedging.png" alt="Mode Setting - Hedging" />
 
-<img src="/images/view-import-basket-csv.png" alt="Import Algo Basket — tab CSV Import" />
+**Pricing Model**
+- **Black-Scholes**: định giá CW theo Strike, maturity, volatility, risk-free rate
+- **Delta One**: giá mục tiêu tuyến tính theo underlying (`price = slope × S + intercept`)
 
-## Khung chi tiết (phải) — các tab con
+**Core Parameters**
+- **Price Bid/Ask Spacing**: spread quanh giá mục tiêu
+- **Refresh Interval**: chu kỳ làm mới lệnh
+- **Bid/Ask Max Qty** + **Randomize Qty %**: độ sâu và độ tự nhiên của thanh khoản
 
-Sau khi chọn một algo, khung bên phải có các tab: **Overview**, **Configuration**, **Performance**, **Orders**, **Trades**, **Logs**.
+**Layering**
+- **Symmetric**: bid/ask cân đối
+- **Asymmetric**: bid/ask cấu hình độc lập theo xu hướng
 
-### Overview (Tổng quan)
+**Hedging**
+- **Hedge Threshold**, **Hedge Ratio %**, **Hedge Instrument**, **Hedge Mode**
 
-<img src="/images/view-control-overview.png" alt="Tab Overview — MM Status, Position, Liquidity Stats" />
+#### Bước 3 — Safety
 
-- **MM Status:** BEST BID/ASK, THEO PRICE, BID/ASK Qty.
-- **Position Details:** AVG BUY PRICE, UNREALIZED/REALIZED P&L, SYMBOL, HEDGE VALUE.
-- **Liquidity Stats:** % LIQUIDITY JOIN, MARKET/ALGO FILLED VOL, FILLED ORDER COUNT.
+<img src="/images/view-create-mm-safety-overview.png" alt="Safety Overview" />
+<img src="/images/view-create-mm-safety-limits-anti-arb.png" alt="Safety Limits and Anti-Arb" />
+<img src="/images/view-create-mm-safety-throttle.png" alt="Safety Throttle" />
 
-### Configuration (Cấu hình — chỉ xem)
+- **Max Loss / Take Profit**: giới hạn dừng theo P&L
+- **Anti-Arb**: giảm size + cooldown khi fill bất thường
+- **Min Update Interval**: giảm nhiễu và ổn định runtime
 
-<img src="/images/view-control-configuration.png" alt="Tab Configuration — Core, Order, Layering, Hedge Settings" />
+Bấm **Start** để kích hoạt thuật toán.
 
-Xem tham số đang chạy: Core Settings, Multi-Account, Inventory, Order Settings, Layering, Pricing Model, **Hedge Settings**, Self Fill, Probe Orders. Muốn đổi → dùng **Sửa** (icon bánh răng).
+### 2) Import hàng loạt
+
+<img src="/images/view-import-basket-manual.png" alt="Import Basket Manual" />
+<img src="/images/view-import-basket-csv.png" alt="Import Basket CSV" />
+
+**Manual Input**
+- Add Row → nhập thông tin → Start All
+
+**CSV Import**
+- Tải template → upload file → xác nhận cột bắt buộc: `accountID`, `product`, `mmMode`
+
+### 3) Emergency Stop
+
+<img src="/images/view-emergency-stop-dialog.png" alt="Emergency Stop Dialog" />
+
+<Warning>
+**Emergency Stop** dừng ngay toàn bộ thuật toán MM đang chạy. Chỉ sử dụng khi có bất thường thị trường, lỗi hệ thống, hoặc rủi ro vượt ngưỡng kiểm soát.
+</Warning>
+
+## Giám sát thuật toán theo tab
+
+Sau khi chọn algo ở panel trái, khu vực chi tiết bên phải cung cấp 6 tab giám sát.
+
+| Tab | Mục tiêu theo dõi | Trigger hành động |
+|-----|-------------------|-------------------|
+| **Overview** | Quote status, vị thế, đóng góp thanh khoản | P&L biến động mạnh, net position lệch nhanh |
+| **Configuration** | Cấu hình runtime hiện tại (read-only) | Cần đối chiếu cấu hình kỳ vọng/thực tế |
+| **Performance** | Hiệu suất tổng hợp, open/filled orders | Fill rate thấp, slippage tăng |
+| **Orders** | Toàn bộ lệnh đã gửi vào thị trường | Reject/Cancel bất thường |
+| **Trades** | Giao dịch đã khớp | Đối soát P&L và hành vi khớp lệnh |
+| **Logs** | Runtime logs và cảnh báo hệ thống | Debug sự cố và truy vết thay đổi |
+
+### Overview
+
+<img src="/images/view-control-overview.png" alt="Control Overview Tab" />
+
+- **MM Status**: best bid/ask, theo price, bid/ask qty
+- **Position Details**: avg buy price, realized/unrealized P&L, hedge value
+- **Liquidity Stats**: market vol, algo filled vol, liquidity join %, filled order count
+
+### Configuration
+
+<img src="/images/view-control-configuration.png" alt="Control Configuration Tab" />
+
+Hiển thị cấu hình runtime: core settings, order settings, layering, pricing model, hedge settings, self fill, probe orders.
 
 ### Performance
 
-<img src="/images/view-control-performance.png" alt="Tab Performance — Summary Report, Open Orders, Filled Orders" />
+<img src="/images/view-control-performance.png" alt="Control Performance Tab" />
 
-- **Summary Report:** FILLED BUY/SELL QTY, NET QTY, P&L, % LIQUIDITY JOIN, MARKET VOL, TOTAL BID/ASK QTY & VALUE.
-- **Open Orders:** bảng giá / KL bid (xanh) và ask (đỏ).
-- **Filled Orders:** lệnh đã khớp (Time, Side, Price, Qty, Value).
+Đánh giá qua 3 khối:
+- **Summary Report** (P&L, net qty, liquidity join)
+- **Open Orders** (độ sâu lệnh đang mở)
+- **Filled Orders** (chất lượng khớp theo thời gian)
 
 ### Orders
 
-<img src="/images/view-control-orders.png" alt="Tab Orders — danh sách lệnh" />
+<img src="/images/view-control-orders.png" alt="Control Orders Tab" />
 
-Bảng lệnh: Order ID, Status, Order Type, Side, Symbol, C.Qty. Phân trang. Khi algo chưa gửi lệnh: "No orders to display".
+Bảng lệnh với các cột: Order ID, Status, Type, Side, Symbol, Filled Qty.
 
 ### Trades
 
-<img src="/images/view-control-trades.png" alt="Tab Trades — giao dịch đã khớp" />
+<img src="/images/view-control-trades.png" alt="Control Trades Tab" />
 
-Giao dịch đã khớp theo algo, đối chiếu P&L.
+Giao dịch đã khớp để đối chiếu P&L và phân tích pattern execution.
 
 ### Logs
 
-<img src="/images/view-control-logs.png" alt="Tab Logs — nhật ký hệ thống" />
+<img src="/images/view-control-logs.png" alt="Control Logs Tab" />
 
-Nhật ký: **Type** (Info/WARN/ERROR), **User**, **Content**, **Time**. Nút **Load more** để xem thêm.
+Nhật ký theo **INFO / WARN / ERROR** phục vụ vận hành và điều tra sự cố.
 
-### Ý nghĩa
+## Checklist vận hành chuẩn
 
-| Block | Ý nghĩa |
-|-------|---------|
-| **Mode** | Sideway / Bullish / Bearish / Following (theo giá underlying). |
-| **Orders** | Order ID, Side, Qty, Price, Status, Time. |
-| **Logs** | INFO / WARN / ERROR. |
-| **Trades** | Giao dịch đã khớp, đối chiếu P&L. |
+<Steps>
+  <Step title="Khởi tạo">
+    Tạo hoặc import thuật toán, xác nhận cấu hình trước khi Start.
+  </Step>
+  <Step title="Giám sát sớm">
+    Theo dõi Overview + Performance trong 15-30 phút đầu.
+  </Step>
+  <Step title="Tinh chỉnh">
+    Điều chỉnh spread, size, refresh, hedge khi hiệu suất lệch mục tiêu.
+  </Step>
+  <Step title="An toàn">
+    Kích hoạt Emergency Stop ngay khi rủi ro hệ thống/tài chính vượt ngưỡng.
+  </Step>
+</Steps>

@@ -1,37 +1,92 @@
 ---
-title: 'Hướng dẫn Algo Market Making & Hedge'
-description: 'Tài liệu sử dụng Algo Market Making & Hedge'
+title: 'Algo Market Making & Hedge'
+description: 'Hướng dẫn vận hành hệ thống Market Making và Hedge'
 ---
 
 <div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
   <div style={{ width: '9.09%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
 </div>
 
-Đây là tài liệu dùng **Algo Market Making & Hedge**: từng màn hình, thao tác và ý nghĩa các trường trên giao diện - tra cứu nhanh khi vận hành.
+Tài liệu hướng dẫn sử dụng hệ thống **Algo Market Making & Hedge**: mô tả chi tiết giao diện, quy trình thao tác và giải thích các trường dữ liệu để hỗ trợ vận hành hiệu quả.
 
+<Info>
+Tài liệu được thiết kế theo hướng **vận hành thực tế**: dễ tra cứu, dễ đối soát và dễ chuẩn hóa quy trình.
+</Info>
 
-## Bắt đầu
+<CardGroup cols={3}>
+  <Card title="Market Making Control" icon="chart-line" href="/mm-hedge/market-making-control">
+    Tạo mới, điều khiển và giám sát vòng đời thuật toán Market Making.
+  </Card>
 
-<Columns cols={3}>
-  <Card
-    title="Market Making"
-    icon="chart-line"
-    href="/mm-hedge"
-  >
-    Tổng quan màn hình, tạo/sửa thuật toán MM, tab Điều khiển và Báo cáo.
+  <Card title="Market Making Report" icon="chart-bar" href="/mm-hedge/market-making-report">
+    Đánh giá hiệu suất giao dịch qua P&L, thanh khoản và chất lượng khớp lệnh.
   </Card>
-  <Card
-    title="Hedge"
-    icon="shield-halved"
-    href="/mm-hedge/hedging-tong-quan"
-  >
-    Hedge Summary, hedge theo underlying, cấu hình và điều khiển hedger.
+
+  <Card title="Hedge Summary" icon="shield-halved" href="/mm-hedge/hedge-summary">
+    Theo dõi mức độ phủ hedge toàn danh mục và theo từng underlying.
   </Card>
-  <Card
-    title="Các lỗi thường gặp và cách xử lý"
-    icon="circle-exclamation"
-    href="/mm-hedge/luu-y-va-loi"
-  >
-    Lưu ý, lỗi thường gặp và bảng thuật ngữ tham khảo.
+
+  <Card title="Hedge Control" icon="sliders" href="/mm-hedge/hedge-control">
+    Điều khiển hedger theo thời gian thực, quản lý execution và xử lý ngoại lệ.
   </Card>
-</Columns>
+
+  <Card title="Tips" icon="lightbulb" href="/mm-hedge/tips">
+    Bộ mẹo thực chiến để tối ưu chiến lược vận hành trong môi trường biến động.
+  </Card>
+
+  <Card title="Thuật ngữ" icon="book" href="/mm-hedge/thuat-ngu">
+    Bảng tra cứu thuật ngữ chuyên ngành cho Market Making và Hedge.
+  </Card>
+</CardGroup>
+
+## Workflow vận hành chuẩn
+
+<Steps>
+  <Step title="Tạo thuật toán Market Making">
+    Truy cập **Market Making Control** → **Create Market Making** → Cấu hình Basic, Mode Setting, Safety → **Start**
+  </Step>
+
+  <Step title="Giám sát hiệu suất">
+    Theo dõi P&L, fill rate, liquidity join % tại tab **Overview** và **Performance**
+  </Step>
+
+  <Step title="Kiểm tra trạng thái hedge">
+    Xem **Hedge Summary** để đánh giá coverage và gap notional theo từng underlying
+  </Step>
+
+  <Step title="Điều chỉnh hedge">
+    Sử dụng **Hedge Control** để cấu hình hedger, theo dõi execution và xử lý residual
+  </Step>
+</Steps>
+
+## Khả năng nổi bật
+
+<AccordionGroup>
+  <Accordion title="Market Making tự động" icon="robot">
+    - Hỗ trợ Black-Scholes và Delta One pricing model
+    - Layering đối xứng và bất đối xứng
+    - Randomize quantity để tạo thanh khoản tự nhiên
+    - Anti-arb và throttling để quản lý rủi ro
+  </Accordion>
+
+  <Accordion title="Hedge thông minh" icon="brain">
+    - Tự động hedge theo delta và threshold
+    - Custom delta cho từng underlying
+    - Nhiều hedge mode: BEST, LAST, MTL
+    - Theo dõi coverage và residual real-time
+  </Accordion>
+
+  <Accordion title="Giám sát và báo cáo" icon="chart-bar">
+    - Dashboard real-time với auto refresh
+    - Theo dõi P&L (realized & unrealized)
+    - Execution quality metrics
+    - Export báo cáo theo mẫu nghiệp vụ
+  </Accordion>
+
+  <Accordion title="Quản lý rủi ro" icon="shield-check">
+    - Max loss và take profit tự động
+    - Anti-arbitrage detection
+    - Price update throttling
+    - Emergency stop toàn hệ thống
+  </Accordion>
+</AccordionGroup>

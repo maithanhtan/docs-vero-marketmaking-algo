@@ -1,118 +1,125 @@
 ---
-title: Hedge Control
-description: Theo dõi trạng thái hedge theo thời gian thực và xử lý nhanh các tình huống vận hành.
+title: 'Hedge Control'
+description: 'Điều khiển hedge theo thời gian thực: coverage, execution, cấu hình và logs'
 ---
 
-## Màn hình Hedge Control
+<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
+  <div style={{ width: '72.73%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+</div>
 
-![Tổng quan màn hình Hedge Control](/images/view-hedge-control-overview.png)
+![Hedge Control Overview](/images/view-hedge-control-overview.png)
 
-Màn hình Hedge Control là dashboard vận hành hedge theo thời gian thực.
-Bạn dùng màn hình này để theo dõi coverage, residual, execution stream và nhật ký hedger trên cùng một nơi.
+Dashboard điều hành hedge theo thời gian thực, tập trung vào 4 mục tiêu: phát hiện lệch hedge, thực thi lệnh, kiểm soát chất lượng execution và xử lý sự cố.
 
-### Thành phần chính
+<Info>
+Trong phiên biến động mạnh, ưu tiên quan sát theo thứ tự: **Coverage Overview** → **Hedge Executions** → **Hedger Logs**.
+</Info>
 
-- **Auto refresh**: Bật hoặc tắt tự động cập nhật dữ liệu.
-- **Refresh**: Tải lại trạng thái mới nhất ngay lập tức.
-- **Add Trade**: Mở form nhập lệnh hedge thủ công.
-- **Report**: Mở hộp thoại xuất báo cáo.
-- **Hedge Settings**: Mở hộp thoại cấu hình hedger theo underlying.
-- **Start**: Khởi chạy hedger cho cấu hình hiện tại.
+<CardGroup cols={4}>
+  <Card title="Coverage" icon="shield-check">
+    Theo dõi thiếu/thừa hedge theo warrant và underlying.
+  </Card>
+  <Card title="Execution" icon="bolt">
+    Giám sát tốc độ và chất lượng khớp lệnh hedge.
+  </Card>
+  <Card title="Configuration" icon="sliders">
+    Điều chỉnh threshold, ratio, custom delta theo chiến lược.
+  </Card>
+  <Card title="Observability" icon="list">
+    Truy vết logs để xử lý lỗi vận hành nhanh.
+  </Card>
+</CardGroup>
 
-## Coverage overview
+## Thanh điều khiển
 
-![Coverage overview trong Hedge Control](/images/view-hedge-control-coverage-overview.png)
+Các nút chức năng chính:
+- **Auto Refresh**: bật/tắt cập nhật tự động
+- **Refresh**: tải lại trạng thái mới nhất
+- **Add Trade**: nhập lệnh hedge thủ công
+- **Report**: xuất báo cáo hedge
+- **Hedge Settings**: cấu hình hedger theo underlying
+- **Start**: khởi chạy hedger với cấu hình hiện tại
 
-Coverage Overview hiển thị trạng thái hedge theo từng mã warrant.
-Bạn có thể lọc theo nhóm **All**, **Missing Hedge**, **Over Hedge**, **Invalid Hedger** để khoanh vùng nhanh mã cần xử lý.
+## Coverage Overview
 
-### Cột dữ liệu quan trọng
+![Coverage Overview](/images/view-hedge-control-coverage-overview.png)
 
-- **Req Hedge**: Khối lượng hedge yêu cầu.
-- **Hedge Pos**: Vị thế hedge hiện tại.
-- **Residual**: Khối lượng còn lệch chưa hedge.
-- **Gap Qty**: Chênh lệch khối lượng.
-- **Gap Notional**: Chênh lệch giá trị hedge.
+Hiển thị trạng thái hedge chi tiết cho từng warrant. Bộ lọc nhanh:
+- **All**
+- **Missing Hedge**
+- **Over Hedge**
+- **Invalid Hedger**
 
-## Hedge executions
+### Các cột quan trọng
 
-![Hedge executions stream](/images/view-hedge-control-executions.png)
+| Cột | Ý nghĩa | Mục tiêu vận hành |
+|-----|---------|-------------------|
+| **Req Hedge** | Khối lượng hedge yêu cầu theo delta | Mốc cần đạt |
+| **Hedge Pos** | Vị thế hedge hiện tại | Thực tế đang nắm giữ |
+| **Residual** | Chênh lệch (Req - Pos) | Dương = thiếu, âm = thừa |
+| **Gap Qty** | Chênh lệch khối lượng cần xử lý | Ưu tiên gap lớn trước |
+| **Gap Notional** | Giá trị tiền của gap | Ưu tiên theo rủi ro tài chính |
 
-Hedge Executions ghi nhận luồng thực thi lệnh hedge.
-Bạn theo dõi chất lượng thực thi qua các chỉ số tổng hợp ở đầu bảng.
+## Hedge Executions
 
-### Chỉ số theo dõi nhanh
+![Hedge Executions](/images/view-hedge-control-executions.png)
 
-- **Total executed qty**: Tổng khối lượng đã thực thi.
-- **Avg execution price**: Giá khớp trung bình.
-- **Avg slippage**: Trượt giá trung bình.
-- **Fill rate**: Tỷ lệ khớp.
-- **Partial count**: Số lệnh khớp một phần.
-- **Rejected count**: Số lệnh bị từ chối.
+Theo dõi chi tiết chất lượng thực thi lệnh hedge.
 
-Bảng chi tiết bên dưới cho bạn đối chiếu theo **Time**, **Warrant**, **Side**, **Quantity**, **Price**, **Slippage**, **Status**.
+### Chỉ số theo dõi
 
-## Hedger logs
+| Chỉ số | Ý nghĩa | Ngưỡng tham chiếu |
+|--------|---------|-------------------|
+| **Total Executed Qty** | Tổng khối lượng đã thực thi | Theo dõi năng lực hedge tổng |
+| **Avg Execution Price** | Giá khớp trung bình | So với giá tham chiếu |
+| **Avg Slippage** | Trượt giá trung bình | < 0.1% là tốt |
+| **Fill Rate** | Tỷ lệ khớp | > 95% là tốt |
+| **Partial Count** | Số lệnh khớp một phần | Càng thấp càng tốt |
+| **Rejected Count** | Số lệnh bị từ chối | 0 là mục tiêu |
 
-![Lifecycle logs trong Hedge Control](/images/view-hedge-control-logs.png)
+## Hedger Logs
 
-Hedger Logs hiển thị toàn bộ lifecycle logs của hedger theo thời gian thực.
-Bạn dùng tab này để kiểm tra thứ tự khởi tạo service, trạng thái runtime và các bất thường trong luồng xử lý.
+![Hedger Logs](/images/view-hedge-control-logs.png)
 
-### Cách dùng tab logs hiệu quả
+Hiển thị lifecycle logs của hedger để debug theo thời gian thực.
 
-- Đối chiếu log với thời điểm có **missing hedge** hoặc **rejected execution**.
-- Tập trung vào cột **Log level** để lọc nhanh bản ghi quan trọng.
-- Kiểm tra các message khởi tạo để xác nhận cấu hình được nạp đúng.
+### Cách đọc logs hiệu quả
 
-## Add hedge trade
+1. Đối chiếu timestamp với thời điểm phát sinh missing/rejected
+2. Lọc nhanh theo mức độ **ERROR** và **WARN**
+3. Kiểm tra sequence event để xác định điểm bất thường
 
-![Hộp thoại Add hedge trade](/images/view-add-hedge-trade-dialog.png)
+## Add Hedge Trade
 
-Bạn dùng **Add Trade** để nhập lệnh hedge thủ công cho algo đang hoạt động.
-Hộp thoại cho phép chọn loại lệnh, chiều giao dịch, symbol và tài khoản hedge trước khi gửi lệnh.
+![Add Hedge Trade Dialog](/images/view-add-hedge-trade-dialog.png)
 
-### Khi nào nên dùng
+Nhập lệnh hedge thủ công với các trường: **Order Type**, **Side**, **Symbol**, **Account**.
 
-- Cần can thiệp nhanh để giảm residual tạm thời.
-- Cần xử lý ngoại lệ khi luồng hedge tự động chưa phản ứng kịp.
+Dùng khi:
+- Cần can thiệp nhanh để giảm residual
+- Hedge tự động phản ứng chậm
+- Kiểm thử execution với khối lượng nhỏ
 
-## Report export
+## Report Export
 
-![Hộp thoại Report export](/images/view-hedge-report-export-dialog.png)
+![Report Export Dialog](/images/view-hedge-report-export-dialog.png)
 
-Bạn dùng **Report** để tải báo cáo hedge theo đúng mẫu nghiệp vụ.
-Hộp thoại hỗ trợ chọn **Report Type** và **Export scope** (toàn bộ underlying hoặc underlying đã chọn).
+Xuất báo cáo hedge theo mẫu nghiệp vụ với:
+- **Report Type**
+- **Export Scope**: All underlying hoặc Selected underlying
 
-### Gợi ý sử dụng
+## Hedge Settings
 
-- Chọn đúng kỳ báo cáo trước khi tải file.
-- Dùng **Selected underlying** khi cần đối soát nhanh theo một mã cụ thể.
+![Hedge Settings Dialog](/images/view-hedge-config-dialog.png)
 
-## Hedge settings
+Các tham số chính:
 
-![Hộp thoại Hedge settings](/images/view-hedge-config-dialog.png)
+| Tham số | Ý nghĩa | Khuyến nghị |
+|---------|---------|-------------|
+| **Hedge Threshold** | Ngưỡng kích hoạt hedge | Đặt theo vốn và độ chịu rủi ro |
+| **Hedge Ratio %** | Tỷ lệ vị thế cần hedge | 50-80% cho cân bằng bảo vệ/chi phí |
+| **Custom Delta** | Delta tùy chỉnh | Hiệu chỉnh theo thực tế thị trường |
 
-Bạn dùng **Hedge Settings** để cấu hình hedger cho underlying đang chọn.
-Tại đây bạn có thể chỉnh các tham số chính như **Hedge Threshold**, **Hedge Ratio**, **Custom Delta** và kiểm tra thông tin instrument liên quan.
-
-### Lưu ý vận hành
-
-- Chỉ lưu cấu hình sau khi kiểm tra lại ngưỡng threshold và tỷ lệ hedge.
-- Theo dõi **Delta history** để đánh giá mức ổn định trước khi chạy lại hedger.
-
-## Màn hình liên quan
-
-### Market Making Reports
-
-![Màn hình Market Making Reports](/images/view-market-making-reports.png)
-
-Màn hình này cho bạn quan sát hiệu năng tổng hợp của các algo market making đang chạy.
-Bạn có thể đối chiếu nhanh với Hedge Control khi cần phân tích chênh lệch giữa trạng thái tạo lập và trạng thái hedge.
-
-### Market Making Control
-
-![Màn hình Market Making Control](/images/view-market-making-control-overview.png)
-
-Màn hình này tập trung vào điều khiển một algo market making cụ thể theo từng tab nghiệp vụ.
-Khi debug vận hành, bạn nên kiểm tra song song Market Making Control và Hedge Control để có đầy đủ ngữ cảnh.
+<Note>
+Sau khi chỉnh cấu hình, luôn quay lại **Coverage Overview** để xác nhận residual và gap notional đã cải thiện.
+</Note>

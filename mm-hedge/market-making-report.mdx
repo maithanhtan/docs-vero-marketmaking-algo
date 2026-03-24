@@ -1,6 +1,6 @@
 ---
 title: 'Market Making Report'
-description: 'Báo cáo P&L và khối lượng theo thuật toán Market Making'
+description: 'Báo cáo hiệu suất Market Making: P&L, thanh khoản và chất lượng thực thi'
 ---
 
 <div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
@@ -9,20 +9,82 @@ description: 'Báo cáo P&L và khối lượng theo thuật toán Market Making
 
 <img src="/images/view-market-making-reports.png" alt="Market Making Reports" />
 
-Xem **báo cáo tổng hợp** theo từng thuật toán: P&L, khối lượng, tỷ lệ fill, vị thế ròng. Mỗi algo một **card** với chỉ số và bảng lệnh đã fill.
+Màn hình báo cáo tập trung vào hiệu quả giao dịch theo từng thuật toán: kết quả tài chính, mức đóng góp thanh khoản và chất lượng khớp lệnh.
 
-Chuyển tab **Báo cáo** → dữ liệu tự load.
+<Info>
+Mục tiêu của tab này là hỗ trợ quyết định vận hành nhanh: giữ nguyên chiến lược, tinh chỉnh tham số hoặc giảm rủi ro vị thế.
+</Info>
 
-## Chỉ số
+<CardGroup cols={3}>
+  <Card title="P&L Snapshot" icon="chart-line">
+    Theo dõi lãi/lỗ tổng, đã thực hiện và chưa thực hiện theo từng algo.
+  </Card>
+  <Card title="Liquidity Contribution" icon="droplet">
+    Đo tỷ lệ đóng góp thanh khoản của algo so với toàn thị trường.
+  </Card>
+  <Card title="Execution Quality" icon="gauge">
+    Đánh giá fill rate, khối lượng khớp và độ ổn định thực thi.
+  </Card>
+</CardGroup>
 
-| Chỉ số | Ý nghĩa |
-|--------|---------|
-| **Total P&L** | Lãi/lỗ tổng (đã + chưa thực hiện). Xanh = lãi, đỏ = lỗ. |
-| **Realized P&L** | Từ mua–bán đã khớp. |
-| **Unrealized P&L** | Theo giá hiện tại và vị thế ròng. |
-| **Buy Qty / Sell Qty** | Tổng KL mua/bán đã khớp. |
-| **Algo filled vol** | Tổng KL giao dịch (mua + bán). |
-| **Market vol** | KL thị trường (mã đó). |
-| **Liquidity join %** | % KL algo / KL thị trường. |
-| **Fill rate** | Số lệnh fill / tổng lệnh. |
-| **Net position** | Vị thế ròng (mua − bán). |
+## Khung báo cáo
+
+Mỗi thuật toán hiển thị dưới dạng **card vận hành** gồm:
+- **Header**: mã CW, trạng thái algo, thời điểm cập nhật
+- **KPI Row**: cụm chỉ số tài chính và thanh khoản
+- **Filled Orders**: bảng giao dịch để đối soát chi tiết
+
+<Note>
+Nên đọc song song với tab **Performance** trong Market Making Control để có bức tranh đầy đủ giữa trạng thái runtime và kết quả thực tế.
+</Note>
+
+## Chỉ số tài chính
+
+| Chỉ số | Ý nghĩa | Góc nhìn vận hành |
+|--------|---------|-------------------|
+| **Total P&L** | Lãi/lỗ tổng = Realized + Unrealized | Đánh giá hiệu quả tổng thể theo thời điểm hiện tại |
+| **Realized P&L** | Lãi/lỗ đã khóa | Đo hiệu quả đã hiện thực hóa, ít nhiễu tức thời |
+| **Unrealized P&L** | Lãi/lỗ mark-to-market | Theo dõi rủi ro vị thế chưa đóng |
+| **Net Position** | Vị thế ròng (Buy Qty - Sell Qty) | Cảnh báo lệch vị thế cần hedge/giảm size |
+
+## Chỉ số thanh khoản và thực thi
+
+| Chỉ số | Ý nghĩa | Ngưỡng tham chiếu |
+|--------|---------|-------------------|
+| **Buy Qty / Sell Qty** | Khối lượng khớp mua/bán | Duy trì cân bằng tương đối theo chiến lược |
+| **Algo Filled Vol** | Tổng khối lượng khớp của algo | Phản ánh mức độ hoạt động thực tế |
+| **Market Vol** | Khối lượng toàn thị trường của mã | Cơ sở tính tỷ lệ đóng góp thanh khoản |
+| **Liquidity Join %** | Algo Filled Vol / Market Vol | Mục tiêu thường 5-15% tùy mã |
+| **Fill Rate** | Lệnh khớp / tổng lệnh gửi | > 30% tốt; < 10% cần rà soát quote logic |
+
+## Filled Orders
+
+Các cột trọng tâm:
+- **Time**
+- **Side**
+- **Price**
+- **Quantity**
+- **Value**
+
+### Cách đọc nhanh bảng giao dịch
+
+1. Đối chiếu giao dịch với biến động P&L
+2. So sánh giá khớp với giá mục tiêu của mô hình
+3. Phát hiện pattern bất thường (lệch một phía, fill không đều, quality giảm)
+
+## Checklist đọc báo cáo nhanh (2 phút)
+
+<Steps>
+  <Step title="Kiểm tra P&L tổng và cấu phần">
+    Xác định ngay trạng thái lợi nhuận và mức rủi ro đang treo.
+  </Step>
+  <Step title="Kiểm tra Net Position">
+    Nếu lệch tăng nhanh, chuyển sang Hedge để đánh giá độ phủ ngay.
+  </Step>
+  <Step title="Đọc Liquidity Join và Fill Rate">
+    Nhận diện sớm việc quote chưa cạnh tranh hoặc spread chưa phù hợp.
+  </Step>
+  <Step title="Drill-down vào Filled Orders">
+    Xác thực nguyên nhân bằng dữ liệu execution chi tiết.
+  </Step>
+</Steps>
