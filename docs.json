@@ -1,6 +1,17 @@
 {
   "theme": "maple",
   "name": "Algo Market Making & Hedge",
+  "seo": {
+    "indexing": "all",
+    "metatags": {
+      "description": "Hướng dẫn sử dụng Algo Market Making & Hedge - Khởi tạo, giám sát và báo cáo hiệu suất Market Making, quản lý coverage, thực thi hedge và theo dõi rủi ro vị thế.",
+      "og:title": "Algo Market Making & Hedge",
+      "og:description": "Hướng dẫn sử dụng Algo Market Making & Hedge",
+      "og:site_name": "Algo Market Making & Hedge Docs",
+      "twitter:title": "Algo Market Making & Hedge",
+      "twitter:description": "Hướng dẫn sử dụng Algo Market Making & Hedge"
+    }
+  },
   "colors": {
     "primary": "#E55D2D",
     "light": "#F2C08A",
