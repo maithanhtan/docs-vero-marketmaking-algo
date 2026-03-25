@@ -1,10 +1,17 @@
 ---
 title: 'Hedge Control'
 description: 'Điều khiển hedge theo thời gian thực: coverage, execution, cấu hình và logs'
+mode: 'wide'
 ---
 
+<div style={{ width: '100%', height: 240, marginBottom: 32, borderRadius: 16, overflow: 'hidden', position: 'relative' }}>
+  <video style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.3) saturate(1.5) hue-rotate(-14deg) brightness(0.72) contrast(1.12)' }} autoPlay loop muted playsInline>
+    <source src="/images/bg_video.mp4" type="video/mp4" />
+  </video>
+</div>
+
 <div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
-  <div style={{ width: '72.73%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+  <div style={{ width: '72.73%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-light) 50%, var(--accent-dark) 100%)' }} />
 </div>
 
 ![Hedge Control Overview](/images/view-hedge-control-overview.png)
@@ -42,23 +49,79 @@ Các nút chức năng chính:
 
 ## Coverage Overview
 
-![Coverage Overview](/images/view-hedge-control-coverage-overview.png)
+![Coverage Overview](/images/view-hedge-coverage-overview.png)
 
-Hiển thị trạng thái hedge chi tiết cho từng warrant. Bộ lọc nhanh:
-- **All**
-- **Missing Hedge**
-- **Over Hedge**
-- **Invalid Hedger**
+Màn hình giám sát trạng thái hedge theo thời gian thực cho toàn bộ warrant portfolio. Trader sử dụng màn hình này để phát hiện warrant thiếu hedge hoặc over hedge, ưu tiên xử lý theo giá trị danh nghĩa rủi ro.
 
-### Các cột quan trọng
+### Filter Tabs
 
-| Cột | Ý nghĩa | Mục tiêu vận hành |
-|-----|---------|-------------------|
-| **Req Hedge** | Khối lượng hedge yêu cầu theo delta | Mốc cần đạt |
-| **Hedge Pos** | Vị thế hedge hiện tại | Thực tế đang nắm giữ |
-| **Residual** | Chênh lệch (Req - Pos) | Dương = thiếu, âm = thừa |
-| **Gap Qty** | Chênh lệch khối lượng cần xử lý | Ưu tiên gap lớn trước |
-| **Gap Notional** | Giá trị tiền của gap | Ưu tiên theo rủi ro tài chính |
+Bộ lọc nhanh theo trạng thái hedge:
+
+- **All**: hiển thị tất cả warrant trong portfolio (badge hiển thị tổng số warrant)
+- **Missing Hedge**: warrant chưa có hedge hoặc thiếu hedge (badge hiển thị số lượng warrant thiếu hedge)
+- **Over Hedge**: warrant có hedge vượt mức cần thiết (badge hiển thị số lượng warrant over hedge)
+- **Invalid Hedger**: warrant có cấu hình hedge không hợp lệ (badge hiển thị số lượng warrant lỗi cấu hình)
+
+### Coverage Table Columns
+
+Bảng chi tiết trạng thái hedge cho từng warrant:
+
+- **Warrant**: mã chứng quyền (ví dụ: CMWG2504, CMWG2510)
+- **Hedger Status**: trạng thái hedger
+  - **WARN**: cảnh báo cần xem xét (màu vàng)
+  - Các trạng thái khác: OK, ERROR
+- **Delta**: hệ số delta của warrant (ví dụ: 1 = delta one, 0.9995 = gần delta one). Độ nhạy giá của warrant so với underlying
+- **Req Hedge**: khối lượng hedge yêu cầu theo delta (required hedge quantity). Đây là mốc cần đạt để duy trì delta neutral
+- **Hedge Pos**: vị thế hedge hiện tại (current hedge position). Khối lượng underlying đang nắm giữ để hedge
+- **Residual**: chênh lệch giữa hedge yêu cầu và thực tế (Req Hedge - Hedge Pos)
+  - Màu đỏ = thiếu hedge (cần mua thêm underlying)
+  - Màu xanh = dư hedge (cần bán bớt underlying)
+  - Ví dụ: -112,210,157 (màu đỏ) = thiếu hedge 112 triệu đơn vị
+- **Gap Qty**: khối lượng chênh lệch cần điều chỉnh (absolute value của Residual). Ưu tiên xử lý gap lớn trước
+- **Gap Notional**: giá trị danh nghĩa của gap (VND). Tính bằng Gap Qty × giá underlying. Ưu tiên theo rủi ro tài chính
+  - Ví dụ: 8,377,489,129,736 VND (màu đỏ) = thiếu hedge ~8.4 nghìn tỷ VND
+- **Covered**: tỷ lệ % hedge coverage
+  - 0% = chưa hedge
+  - 100% = hedge đầy đủ
+  - Âm (ví dụ: -3%) = over hedge 3%
+  - Dương < 100% = thiếu hedge
+
+### Summary Metrics
+
+Tổng hợp rủi ro hedge cho toàn portfolio:
+
+- **ONMKT**: số lượng warrant đang active trong hệ thống market making
+  - Ví dụ: 0 = không có warrant nào đang chạy
+- **Qty Hedge**: tổng khối lượng hedge hiện tại (số lượng underlying đang nắm giữ)
+  - Ví dụ: -109,464,882 = đang short 109 triệu đơn vị underlying
+  - Âm = short position, dương = long position
+- **Req Notional**: tổng giá trị danh nghĩa hedge yêu cầu (VND)
+  - Ví dụ: 8,582,046,721,734 VND = cần hedge ~8.6 nghìn tỷ VND
+  - Tính từ tổng delta exposure của tất cả warrant
+- **Hedge Notional**: tổng giá trị danh nghĩa hedge hiện tại (VND)
+  - Ví dụ: 215,228,427,405 VND = đang hedge ~215 tỷ VND
+  - Tính từ khối lượng hedge × giá underlying
+- **Warrant Qty**: tổng khối lượng warrant đang nắm giữ
+  - Ví dụ: -1,079,126,700 = đang short 1.079 tỷ warrant
+  - Âm = short position (đã bán warrant), dương = long position
+- **Warrant Notional**: tổng giá trị danh nghĩa warrant (VND)
+  - Ví dụ: 2,233,792,269,000 VND = ~2.2 nghìn tỷ VND
+  - Tính từ khối lượng warrant × giá warrant
+- **Buy Mode**: chế độ thực thi lệnh mua hedge
+  - **BEST**: đặt lệnh tại giá bid tốt nhất
+  - **LAST**: đặt lệnh tại giá khớp cuối
+  - **MTL**: Market-to-Limit
+  - **OPPOSITE**: đặt lệnh phía đối diện
+- **Sell Mode**: chế độ thực thi lệnh bán hedge
+  - Các giá trị tương tự Buy Mode
+
+**Legacy Metrics** (vẫn hiển thị để tương thích):
+- **Total Missing Hedge Notional**: tổng giá trị danh nghĩa thiếu hedge (VND, màu đỏ)
+  - Ví dụ: 10,127,060,032,129 VND = thiếu hedge ~10.1 nghìn tỷ VND
+  - Cần ưu tiên xử lý để giảm rủi ro delta
+- **Total Over Hedge Notional**: tổng giá trị danh nghĩa hedge dư (VND, màu vàng)
+  - Ví dụ: 0 VND = không có warrant nào over hedge
+  - Cân nhắc giảm hedge để tối ưu chi phí funding
 
 ## Hedge Executions
 
@@ -95,10 +158,11 @@ Hiển thị lifecycle logs của hedger để debug theo thời gian thực.
 
 Nhập lệnh hedge thủ công với các trường: **Order Type**, **Side**, **Symbol**, **Account**.
 
-Dùng khi:
-- Cần can thiệp nhanh để giảm residual
-- Hedge tự động phản ứng chậm
-- Kiểm thử execution với khối lượng nhỏ
+**Dùng khi**: Trade/PT ngoài hệ thống cần ghi nhận hedge/warrant position.
+
+<Warning>
+**Add Trade không validate giá và khối lượng**. Bạn cần kiểm tra lại giá, khối lượng, mã và tài khoản trước khi xác nhận add trade. Sai sót có thể dẫn đến sai lệch dữ liệu hedge coverage và rủi ro vị thế.
+</Warning>
 
 ## Report Export
 

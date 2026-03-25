@@ -1,48 +1,71 @@
 {
-  "theme": "mint",
+  "theme": "maple",
   "name": "Algo Market Making & Hedge",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#E55D2D",
+    "light": "#F2C08A",
+    "dark": "#8C3B23"
   },
-  "favicon": "/logo/ammh-favicon.png",
+  "appearance": {
+    "default": "light",
+    "strict": false
+  },
+  "fonts": {
+    "heading": {
+      "family": "Be Vietnam Pro"
+    },
+    "body": {
+      "family": "Noto Sans"
+    }
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "background": {
+    "decoration": "grid"
+  },
+  "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
+    "style": "minimal",
+    "groups": [
       {
-        "tab": "Algo Market Making & Hedge",
-        "groups": [
-          {
-            "group": "Home",
-            "pages": [
-              "index"
-            ]
-          },
-          {
-            "group": "Market Making",
-            "pages": [
-              "mm-hedge/market-making-control",
-              "mm-hedge/market-making-report"
-            ]
-          },
-          {
-            "group": "Hedge",
-            "pages": [
-              "mm-hedge/hedge-summary",
-              "mm-hedge/hedge-control"
-            ]
-          },
-          {
-            "group": "Tips và Thuật ngữ",
-            "pages": [
-              "mm-hedge/tips",
-              "mm-hedge/thuat-ngu"
-            ]
-          }
+        "group": "Home",
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "group": "Market Making",
+        "pages": [
+          "mm-hedge/market-making-control",
+          "mm-hedge/market-making-report"
+        ]
+      },
+      {
+        "group": "Hedge",
+        "pages": [
+          "mm-hedge/hedge-summary",
+          "mm-hedge/hedge-control"
+        ]
+      },
+      {
+        "group": "Tips và Thuật ngữ",
+        "pages": [
+          "mm-hedge/tips",
+          "mm-hedge/thuat-ngu"
+        ]
+      },
+      {
+        "group": "Support",
+        "pages": [
+          "support"
         ]
       }
     ],
     "global": {}
+  },
+  "sidebar": {
+    "items": "border"
   },
   "logo": {
     "light": "/logo/ammh-logo-light.svg",

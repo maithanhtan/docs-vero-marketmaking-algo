@@ -1,15 +1,22 @@
 ---
 title: 'Market Making Control'
 description: 'Quản lý vòng đời thuật toán Market Making: khởi tạo, giám sát, tinh chỉnh và kiểm soát rủi ro'
+mode: 'wide'
 ---
 
-<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
-  <div style={{ width: '45.45%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, #16A34A 0%, #07C983 50%, #15803D 100%)' }} />
+<div style={{ width: '100%', height: 240, marginBottom: 32, borderRadius: 16, overflow: 'hidden', position: 'relative' }}>
+  <video style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.3) saturate(1.5) hue-rotate(-14deg) brightness(0.72) contrast(1.12)' }} autoPlay loop muted playsInline>
+    <source src="/images/bg_video.mp4" type="video/mp4" />
+  </video>
 </div>
 
-<img src="/images/view-market-making-control-overview.png" alt="Market Making Control Overview" />
+<div style={{ width: '100%', height: 4, marginBottom: 24, borderRadius: 2, background: 'rgba(0,0,0,0.08)' }}>
+  <div style={{ width: '45.45%', height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-light) 50%, var(--accent-dark) 100%)' }} />
+</div>
 
-Màn hình điều hành trung tâm cho Market Making: tạo thuật toán, nhập theo lô, giám sát hiệu suất theo thời gian thực và xử lý tình huống khẩn cấp.
+<img src="/images/view-market-making-control-overview.png" alt="Market Making Control Overview" style={{ width: '100%', borderRadius: 16 }} />
+
+Màn hình điều hành trung tâm cho Market Making: tạo thuật toán, nhập theo nhóm, giám sát hiệu suất theo thời gian thực và xử lý tình huống khẩn cấp.
 
 <Info>
 Luồng khuyến nghị: **Khởi tạo** → **Giám sát** → **Tinh chỉnh** → **Kiểm soát rủi ro**.
@@ -20,7 +27,7 @@ Luồng khuyến nghị: **Khởi tạo** → **Giám sát** → **Tinh chỉnh*
     Tạo thuật toán theo từng mã với cấu hình đầy đủ Basic, Mode Setting và Safety.
   </Card>
   <Card title="Import Basket" icon="file-arrow-up">
-    Nhập hàng loạt thuật toán bằng Manual Input hoặc CSV theo template chuẩn.
+    Nhập hàng loạt thuật toán bằng Manual Input hoặc CSV theo template.
   </Card>
   <Card title="Emergency Stop" icon="triangle-exclamation">
     Dừng toàn bộ thuật toán MM đang chạy khi phát sinh rủi ro hệ thống hoặc thị trường.
@@ -31,66 +38,149 @@ Luồng khuyến nghị: **Khởi tạo** → **Giám sát** → **Tinh chỉnh*
 
 ### 1) Tạo thuật toán Market Making
 
-<img src="/images/view-create-mm-basic.png" alt="Create Market Making - Basic" />
-
 Bấm **Create Market Making** để mở quy trình cấu hình 3 bước.
 
 #### Bước 1 — Basic
+
+<img src="/images/view-create-mm-basic.png" alt="Create Market Making - Basic" />
+
+Màn hình cấu hình thông tin cơ bản của thuật toán:
 
 | Trường | Mục đích |
 |--------|----------|
 | **Market Making Symbol** | Mã CW/chứng khoán cần tạo lập |
 | **Underlying Symbol** | Mã cơ sở để tính giá mục tiêu |
 | **MM Account** | Tài khoản đặt lệnh bid/ask |
-| **Hedge Account** | Tài khoản hedge (nếu tách riêng) |
+| **Hedge Account** | Tài khoản hedge (nếu cần hedge) |
 
 #### Bước 2 — Mode Setting
 
+##### Pricing Model
+
 <img src="/images/view-create-mm-mode-black-scholes.png" alt="Mode Setting - Black Scholes" />
+
+**Black-Scholes**: định giá CW theo các tham số:
+- **Strike Price (K)**: giá thực hiện của quyền chọn
+- **Maturity Date**: ngày đáo hạn
+- **Volatility (%)**: độ biến động ngầm định (implied volatility)
+- **Risk-Free Rate (%)**: lãi suất phi rủi ro
+- **Option Type**: Call hoặc Put
+- **Conversion Ratio**: tỷ lệ chuyển đổi (ví dụ: 0.1 = 10 warrants cho 1 cổ phiếu cơ sở)
+
+Phù hợp cho quyền chọn và CW.
+
 <img src="/images/view-create-mm-mode-delta-one.png" alt="Mode Setting - Delta One" />
+
+**Delta One**: giá mục tiêu tuyến tính theo underlying (`price = slope × S + intercept`). Phù hợp cho market making symbol có tính cointegration với underlying (ví dụ: ETF VN30 trên underlying VN30).
+
+- **Pricing Slope**: hệ số nhân cho giá underlying (multiplier for underlying price)
+- **Pricing Intercept**: giá trị cố định cộng thêm vào giá (fixed offset added to price)
+
+##### Core Parameters
+
 <img src="/images/view-create-mm-mode-core-params.png" alt="Mode Setting - Core Parameters" />
+
+Cấu hình các thông số vận hành chính:
+
+**Price Mode**: chế độ tham chiếu giá để đặt lệnh
+- **Last Price**: sử dụng giá khớp cuối cùng làm tham chiếu
+- **Best Bid/Ask**: sử dụng giá tốt nhất hiện tại làm tham chiếu
+
+**Price bid-ask spacing (price step)**: khoảng cách giá giữa bid và ask so với giá lý thuyết (spread), tính bằng bậc giá
+
+**Randomize Qty Interval (ms)**: chu kỳ thay đổi khối lượng ngẫu nhiên (milliseconds)
+
+**Volume Configuration**:
+- **Bid Max Qty**: tổng khối lượng tối đa trên bid
+- **Bid Random Qty (%)**: tỷ lệ % randomize khối lượng bid trên từng layer
+- **Ask Max Qty**: tổng khối lượng tối đa trên ask
+- **Ask Random Qty (%)**: tỷ lệ % randomize khối lượng ask trên từng layer
+
+##### Layering
+
 <img src="/images/view-create-mm-mode-layering-symmetric.png" alt="Mode Setting - Layering Symmetric" />
+
+**Symmetric**: bid/ask cân đối, phân bổ khối lượng đều hai bên.
+
+- **Layering Mode**: chế độ phân lớp (Symmetric)
+- **Layer Count**: số lượng layer (độ sâu sổ lệnh)
+- **Price layer spacing (price step)**: khoảng cách giá giữa các layer
+- **Symmetric Layering Configuration**: phân bổ khối lượng cho từng layer (L1, L2, L3, L4, L5)
+
 <img src="/images/view-create-mm-mode-layering-asymmetric.png" alt="Mode Setting - Layering Asymmetric" />
-<img src="/images/view-create-mm-mode-hedging.png" alt="Mode Setting - Hedging" />
 
-**Pricing Model**
-- **Black-Scholes**: định giá CW theo Strike, maturity, volatility, risk-free rate
-- **Delta One**: giá mục tiêu tuyến tính theo underlying (`price = slope × S + intercept`)
+**Asymmetric**: bid/ask cấu hình độc lập, điều chỉnh theo xu hướng thị trường.
 
-**Core Parameters**
-- **Price Bid/Ask Spacing**: spread quanh giá mục tiêu
-- **Refresh Interval**: chu kỳ làm mới lệnh
-- **Bid/Ask Max Qty** + **Randomize Qty %**: độ sâu và độ tự nhiên của thanh khoản
+- **Layering Mode**: chế độ phân lớp (Asymmetric)
+- **Layer Count**: số lượng layer
+- **Asymmetric Layering Configuration**: bảng cấu hình chi tiết cho từng layer
+  - **Level**: mức layer (L1, L2, L3, ...)
+  - **Bid Price Step**: khoảng cách giá bid so với giá lý thuyết từ pricing model
+  - **Ask Price Step**: khoảng cách giá ask so với giá lý thuyết từ pricing model
+  - **Bid Qty %**: phần trăm khối lượng bid cho layer này
+  - **Ask Qty %**: phần trăm khối lượng ask cho layer này
 
-**Layering**
-- **Symmetric**: bid/ask cân đối
-- **Asymmetric**: bid/ask cấu hình độc lập theo xu hướng
+##### Hedging
 
-**Hedging**
-- **Hedge Threshold**, **Hedge Ratio %**, **Hedge Instrument**, **Hedge Mode**
+<img src="/images/view-hedge-coverage-overview.png" alt="Warrant Hedge Coverage Overview" />
+
+Màn hình giám sát hedge coverage cho warrant, hiển thị trạng thái hedge theo thời gian thực:
+
+**Filter Tabs**:
+- **All**: hiển thị tất cả warrant
+- **Missing Hedge**: warrant chưa có hedge hoặc thiếu hedge
+- **Over Hedge**: warrant có hedge vượt mức cần thiết
+- **Invalid Hedger**: warrant có cấu hình hedge không hợp lệ
+
+**Coverage Table Columns**:
+- **Warrant**: mã chứng quyền (ví dụ: CMWG2504, CMWG2510)
+- **Hedger Status**: trạng thái hedger (WARN = cảnh báo cần xem xét)
+- **Delta**: hệ số delta của warrant (độ nhạy giá so với underlying)
+- **Req Hedge**: khối lượng hedge yêu cầu (required hedge quantity)
+- **Hedge Pos**: vị thế hedge hiện tại (current hedge position)
+- **Residual**: chênh lệch giữa hedge yêu cầu và thực tế (màu đỏ = thiếu hedge, màu xanh = dư hedge)
+- **Gap Qty**: khối lượng chênh lệch cần điều chỉnh
+- **Gap Notional**: giá trị danh nghĩa của gap (VND)
+- **Covered**: tỷ lệ % hedge coverage (0% = chưa hedge, -3% = over hedge)
+
+**Summary Metrics**:
+- **Total Missing Hedge Notional**: tổng giá trị danh nghĩa thiếu hedge (màu đỏ)
+- **Total Over Hedge Notional**: tổng giá trị danh nghĩa hedge dư (màu vàng)
+
+Màn hình này giúp trader nhanh chóng xác định warrant nào cần điều chỉnh hedge để duy trì delta neutral.
 
 #### Bước 3 — Safety
 
-<img src="/images/view-create-mm-safety-overview.png" alt="Safety Overview" />
 <img src="/images/view-create-mm-safety-limits-anti-arb.png" alt="Safety Limits and Anti-Arb" />
+
+**Safety Limits**:
+- **Max Loss (0 = disabled)**: ngưỡng lỗ tối đa (VND), dừng thuật toán khi tổng lỗ vượt giá trị này (0 = không giới hạn)
+- **Take Profit (0 = disabled)**: ngưỡng lời mục tiêu (VND), dừng thuật toán khi đạt lợi nhuận này (0 = không giới hạn)
+
+**Anti-Arb Safety**: cơ chế phòng chống arbitrage
+- **Fill Window (ms)**: cửa sổ thời gian quan sát fill (milliseconds)
+- **Fill Threshold**: giá trị danh nghĩa (VND) fill bất thường trong cửa sổ thời gian để kích hoạt bảo vệ
+- **Qty Reduction %**: phần trăm giảm khối lượng khi phát hiện fill bất thường
+- **Cooldown (ms)**: thời gian chờ trước khi khôi phục khối lượng bình thường (milliseconds)
+
 <img src="/images/view-create-mm-safety-throttle.png" alt="Safety Throttle" />
 
-- **Max Loss / Take Profit**: giới hạn dừng theo P&L
-- **Anti-Arb**: giảm size + cooldown khi fill bất thường
-- **Min Update Interval**: giảm nhiễu và ổn định runtime
-
-Bấm **Start** để kích hoạt thuật toán.
+**Price Update Throttling**:
+- **Min Update Interval (ms)**: khoảng thời gian tối thiểu giữa các lần cập nhật giá (milliseconds). Giá trị 0 = không throttling. Giúp giảm nhiễu và ổn định runtime.
 
 ### 2) Import hàng loạt
 
+#### Manual Input
+
 <img src="/images/view-import-basket-manual.png" alt="Import Basket Manual" />
+
+Nhập từng dòng thuật toán thủ công: Add Row → nhập thông tin → Start All.
+
+#### CSV Import
+
 <img src="/images/view-import-basket-csv.png" alt="Import Basket CSV" />
 
-**Manual Input**
-- Add Row → nhập thông tin → Start All
-
-**CSV Import**
-- Tải template → upload file → xác nhận cột bắt buộc: `accountID`, `product`, `mmMode`
+Tải template → upload file → xác nhận cột bắt buộc: `accountID`, `product`, `mmMode`.
 
 ### 3) Emergency Stop
 
@@ -117,9 +207,26 @@ Sau khi chọn algo ở panel trái, khu vực chi tiết bên phải cung cấp
 
 <img src="/images/view-control-overview.png" alt="Control Overview Tab" />
 
-- **MM Status**: best bid/ask, theo price, bid/ask qty
-- **Position Details**: avg buy price, realized/unrealized P&L, hedge value
-- **Liquidity Stats**: market vol, algo filled vol, liquidity join %, filled order count
+**MM Status**: trạng thái quote hiện tại
+- **Best Bid**: giá bid tốt nhất của thuật toán
+- **Theo Price**: giá lý thuyết (theoretical price)
+- **Best Ask**: giá ask tốt nhất của thuật toán
+- **Bid Qty**: tổng khối lượng bid
+- **Ask Qty**: tổng khối lượng ask
+
+**Position Details**: thông tin vị thế
+- **Avg Buy Price**: giá mua trung bình
+- **Unrealized P&L**: lãi/lỗ chưa thực hiện
+- **Realized P&L**: lãi/lỗ đã thực hiện
+- **Symbol**: mã chứng khoán đang market making
+- **Hedge Value**: giá trị hedge hiện tại
+
+**Liquidity Stats**: thống kê đóng góp thanh khoản
+- **Liquidity Join %**: tỷ lệ % tham gia thanh khoản so với thị trường
+- **Market Filled Vol**: khối lượng thị trường đã khớp
+- **Algo Filled Vol**: khối lượng thuật toán đã khớp
+- **Algo Filled Value**: giá trị thuật toán đã khớp
+- **Filled Order Count**: số lượng lệnh đã khớp
 
 ### Configuration
 
@@ -131,22 +238,53 @@ Hiển thị cấu hình runtime: core settings, order settings, layering, prici
 
 <img src="/images/view-control-performance.png" alt="Control Performance Tab" />
 
-Đánh giá qua 3 khối:
-- **Summary Report** (P&L, net qty, liquidity join)
-- **Open Orders** (độ sâu lệnh đang mở)
-- **Filled Orders** (chất lượng khớp theo thời gian)
+**Summary Report**: báo cáo tổng hợp hiệu suất
+- **Filled Buy Qty**: tổng khối lượng buy đã khớp
+- **Filled Sell Qty**: tổng khối lượng sell đã khớp
+- **Net Qty**: vị thế ròng (buy - sell)
+- **P&L**: lãi/lỗ tổng
+- **% Liquidity Join %**: tỷ lệ đóng góp thanh khoản
+- **Market Vol**: khối lượng thị trường
+- **Total Bid Qty**: tổng khối lượng bid đang mở
+- **Total Bid Value**: tổng giá trị bid đang mở
+- **Total Ask Qty**: tổng khối lượng ask đang mở
+- **Total Ask Value**: tổng giá trị ask đang mở
+
+**Open Orders**: lệnh đang mở
+- Bid side: Price, Qty, Total
+- Ask side: Price, Qty, Total
+
+**Filled Orders**: lệnh đã khớp theo thời gian
+- Time, Side, Price, Qty, Value
 
 ### Orders
 
 <img src="/images/view-control-orders.png" alt="Control Orders Tab" />
 
-Bảng lệnh với các cột: Order ID, Status, Type, Side, Symbol, Filled Qty.
+Bảng lệnh chi tiết với các cột:
+- **Order ID**: mã định danh lệnh
+- **Status**: trạng thái lệnh (New, Filled, Partially Filled, Cancelled, Rejected)
+- **Order Type**: loại lệnh (Limit, Market, etc.)
+- **Side**: chiều lệnh (Buy/Sell)
+- **Symbol**: mã chứng khoán
+- **C.Qty**: khối lượng đặt (Created Quantity)
+- **C.Price**: giá đặt (Created Price)
+- **F.Qty**: khối lượng đã khớp (Filled Quantity)
+- **Last Time**: thời gian cập nhật cuối
 
 ### Trades
 
 <img src="/images/view-control-trades.png" alt="Control Trades Tab" />
 
-Giao dịch đã khớp để đối chiếu P&L và phân tích pattern execution.
+Bảng giao dịch đã khớp với các cột:
+- **Trade ID**: mã định danh giao dịch
+- **Order ID**: mã lệnh tương ứng
+- **Symbol**: mã chứng khoán
+- **Qty**: khối lượng khớp
+- **Price**: giá khớp
+- **Time**: thời gian khớp
+
+Dùng để đối chiếu P&L và phân tích pattern execution.
 
 ### Logs
 
