@@ -35,7 +35,7 @@
   "background": {
     "decoration": "grid"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/favicon.png",
   "navigation": {
     "style": "minimal",
     "groups": [
@@ -79,8 +79,8 @@
     "items": "border"
   },
   "logo": {
-    "light": "/logo/ammh-logo-light.svg",
-    "dark": "/logo/ammh-logo-dark.svg"
+    "light": "/logo/vero-logo.png",
+    "dark": "/logo/vero-logo.png"
   },
   "navbar": {},
   "footer": {}
